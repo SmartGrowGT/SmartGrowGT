@@ -1,16 +1,9 @@
 "use strict";
 
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import { Schema, model } from 'mongoose';
 
 const CropSchema = new Schema(
     {
-        userId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            required: true,
-        },
-
         name: {
             type: String,
             required: true,
@@ -85,4 +78,4 @@ const CropSchema = new Schema(
 );
 
 // Crop
-module.exports = mongoose.model("Crop", CropSchema);
+export default model("Crop", CropSchema);
