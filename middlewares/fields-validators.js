@@ -1,5 +1,5 @@
 import { body } from 'express-validator';
-import { checkValidators } from './check-validators.js'; // Tu middleware actual
+import { checkValidators } from './check-validators.js'; 
 
 export const fieldValidator = [
     body('name', 'El nombre de la parcela es obligatorio')

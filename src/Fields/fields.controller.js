@@ -23,7 +23,7 @@ export const createField = async (req, res) => {
 
 export const getFields = async (req, res) => {
     try {
-        const fields = await Field.find()
+        const fields = await Field.find({ status: true })
             .populate('user', 'name email') 
             .populate('crop', 'nombreCultivo');
 
@@ -53,6 +53,35 @@ export const getFieldById = async (req, res) => {
     }
 };
 
+export const getFieldsByUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        
+        // Filtramos por el ID del usuario y traemos la info del cultivo
+        const fields = await Field.find({ user: userId })
+            .populate('crop', 'nombreCultivo humedad_min humedad_max');
+
+        if (fields.length === 0) {
+            return res.status(404).send({
+                success: false,
+                message: 'No se encontraron parcelas para este usuario'
+            });
+        }
+
+        return res.send({
+            success: true,
+            total: fields.length,
+            fields
+        });
+    } catch (err) {
+        return res.status(500).send({
+            success: false,
+            message: 'Error al obtener las parcelas del usuario',
+            err
+        });
+    }
+};
+
 export const updateField = async (req, res) => {
     try {
         const { id } = req.params;
@@ -72,15 +101,36 @@ export const updateField = async (req, res) => {
     }
 };
 
-export const deleteField = async (req, res) => {
+export const deactivateField = async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedField = await Field.findByIdAndDelete(id);
+        const field = await Field.findByIdAndUpdate(id, { status: false }, { new: true });
 
-        if (!deletedField) return res.status(404).send({ message: 'Parcela no encontrada' });
+        if (!field) return res.status(404).send({ success: false, message: 'Parcela no encontrada' });
 
-        return res.send({ message: 'Parcela eliminada correctamente' });
+        return res.send({
+            success: true,
+            message: 'Parcela desactivada correctamente',
+            field
+        });
     } catch (err) {
-        return res.status(500).send({ message: 'Error al eliminar' });
+        return res.status(500).send({ success: false, message: 'Error al desactivar la parcela' });
+    }
+};
+
+export const activateField = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const field = await Field.findByIdAndUpdate(id, { status: true }, { new: true });
+
+        if (!field) return res.status(404).send({ success: false, message: 'Parcela no encontrada' });
+
+        return res.send({
+            success: true,
+            message: 'Parcela activada correctamente',
+            field
+        });
+    } catch (err) {
+        return res.status(500).send({ success: false, message: 'Error al activar la parcela' });
     }
 };

@@ -1,23 +1,29 @@
 import { Router } from 'express';
-import {createField, getFields, getFieldById, updateField, deleteField } from './fields.controller.js';
-import { fieldValidator } from '../../middlewares/field.validators.js';
+import {createField, getFields, getFieldById, getFieldsByUser,updateField, deactivateField, activateField } from './fields.controller.js';
+import { fieldValidator } from '../../middlewares/fields-validators.js';
 
-const api = Router();
+const routes = Router();
 
 
 // Listar todas las parcelas
-api.get('/', getFields);
+routes.get('/', getFields);
 
 // Buscar parcela por ID
-api.get('/:id', getFieldById);
+routes.get('/:id', getFieldById);
+
+// Listar parcelas por usuario
+routes.get('/user/:userId', getFieldsByUser);
 
 // Crear parcela (con validaciones)
-api.post('/', [fieldValidator], createField);
+routes.post('/', [fieldValidator], createField);
 
 // Actualizar parcela
-api.put('/:id', [fieldValidator], updateField);
+routes.put('/:id', [fieldValidator], updateField);
 
 // Eliminar parcela
-api.delete('/:id', deleteField);
+routes.put('/deactivate/:id', deactivateField);
 
-export default api;
+// Activar parcela (en caso de eliminacion)
+routes.put('/activate/:id', activateField);
+
+export default routes;

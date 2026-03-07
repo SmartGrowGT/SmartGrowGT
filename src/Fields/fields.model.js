@@ -31,6 +31,11 @@ const fieldSchema = new Schema({
         default: null // Identificador del dispositivo Raspberry (Se asignara despues)
     },
 
+    status: {
+        type: Boolean,
+        default: true
+    },
+
     // --- Parametros Tecnicos del suelo ---
     // Estos datos son los que ingresa el usuario para calcular el riego
     soilData: {
