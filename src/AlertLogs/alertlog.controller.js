@@ -113,6 +113,7 @@ export const getAlertsByField = async (req,res)=>{
 }
 
 
+
 // Obtener alertas malas
 export const getBadAlerts = async (req,res)=>{
 
