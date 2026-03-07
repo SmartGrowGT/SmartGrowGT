@@ -23,9 +23,9 @@ export const createField = async (req, res) => {
 
 export const getFields = async (req, res) => {
     try {
-        const fields = await Field.find({ status: true })
-            .populate('user', 'name email') 
-            .populate('crop', 'nombreCultivo');
+        const fields = await Field.find({ isActive: true }) 
+            .populate('user', 'name surname email') 
+            .populate('crop', 'name description');  
 
         return res.send({
             success: true,
@@ -33,6 +33,7 @@ export const getFields = async (req, res) => {
             fields
         });
     } catch (err) {
+        console.error(err); 
         return res.status(500).send({
             success: false,
             message: 'Error al obtener las parcelas'
@@ -87,24 +88,35 @@ export const updateField = async (req, res) => {
         const { id } = req.params;
         const data = req.body;
 
-        const updatedField = await Field.findByIdAndUpdate(id, data, { new: true });
+        const updatedField = await Field.findByIdAndUpdate(
+            id, 
+            { $set: data }, 
+            { new: true, runValidators: true }
+        );
 
-        if (!updatedField) return res.status(404).send({ message: 'No se encontró la parcela' });
+        if (!updatedField) return res.status(404).send({ 
+            success: false, 
+            message: 'No se encontró la parcela' 
+        });
 
         return res.send({
             success: true,
-            message: 'Parcela actualizada',
+            message: 'Parcela actualizada correctamente',
             updatedField
         });
     } catch (err) {
-        return res.status(500).send({ message: 'Error al actualizar' });
+        console.error(err);
+        return res.status(500).send({ 
+            success: false, 
+            message: 'Error al actualizar' 
+        });
     }
 };
 
 export const deactivateField = async (req, res) => {
     try {
         const { id } = req.params;
-        const field = await Field.findByIdAndUpdate(id, { status: false }, { new: true });
+        const field = await Field.findByIdAndUpdate(id, { isActive: false }, { new: true });
 
         if (!field) return res.status(404).send({ success: false, message: 'Parcela no encontrada' });
 
@@ -121,7 +133,7 @@ export const deactivateField = async (req, res) => {
 export const activateField = async (req, res) => {
     try {
         const { id } = req.params;
-        const field = await Field.findByIdAndUpdate(id, { status: true }, { new: true });
+        const field = await Field.findByIdAndUpdate(id, { isActive: true }, { new: true });
 
         if (!field) return res.status(404).send({ success: false, message: 'Parcela no encontrada' });
 

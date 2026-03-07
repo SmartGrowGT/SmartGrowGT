@@ -39,3 +39,20 @@ export const fieldValidator = [
     
     checkValidators 
 ];
+
+export const validateUpdateField = [
+    body('name').optional().notEmpty().withMessage('El nombre no puede estar vacío'),
+    body('location').optional().notEmpty().withMessage('La ubicación no puede estar vacía'),
+    body('area').optional().isNumeric().withMessage('El área debe ser un valor numérico'),
+    body('hardwareId').optional().notEmpty(),
+    // Para soilData, permitimos cambios individuales
+    body('soilData.cc').optional().isNumeric(),
+    body('soilData.pmp').optional().isNumeric(),
+    body('soilData.ur').optional().isNumeric(),
+    body('soilData.zr').optional().isNumeric(),
+    body('soilData.dap').optional().isNumeric(),
+    body('soilData.ib').optional().isNumeric(),
+    body('soilData.qest').optional().isNumeric(),
+    body('healthStatus').optional().isIn(['Saludable', 'En Riesgo', 'Critico']),
+    checkValidators
+];

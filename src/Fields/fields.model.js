@@ -17,12 +17,12 @@ const fieldSchema = new Schema({
     // --- RELACIONES ---
     user: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Usuario',
         required: true
     },
     crop: {
         type: Schema.Types.ObjectId,
-        ref: 'Crops',
+        ref: 'Crop',
         required: true
     },
     
@@ -31,7 +31,7 @@ const fieldSchema = new Schema({
         default: null // Identificador del dispositivo Raspberry (Se asignara despues)
     },
 
-    status: {
+    isActive: {
         type: Boolean,
         default: true
     },
@@ -68,9 +68,9 @@ const fieldSchema = new Schema({
             description: 'Caudal Estable: Flujo de agua constante en el sistema (L/s)' 
         }
     },
-    status: {
+    healthStatus: {
         type: String,
-        enum: ['Saludable', 'En Riesgo', 'Citico'],
+        enum: ['Saludable', 'En Riesgo', 'Critico'],
         default: 'Saludable'
     }
 }, {

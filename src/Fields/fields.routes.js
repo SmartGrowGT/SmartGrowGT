@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {createField, getFields, getFieldById, getFieldsByUser,updateField, deactivateField, activateField } from './fields.controller.js';
-import { fieldValidator } from '../../middlewares/fields-validators.js';
+import { fieldValidator, validateUpdateField  } from '../../middlewares/fields-validators.js';
 
 const routes = Router();
 
@@ -18,7 +18,7 @@ routes.get('/user/:userId', getFieldsByUser);
 routes.post('/', [fieldValidator], createField);
 
 // Actualizar parcela
-routes.put('/:id', [fieldValidator], updateField);
+routes.put('/:id', [validateUpdateField], updateField);
 
 // Eliminar parcela
 routes.put('/deactivate/:id', deactivateField);
