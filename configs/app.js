@@ -6,6 +6,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import { cordOptions } from './cors-configuration.js';
 import { dbConnection } from './db.js';
+import cultivosRoutes from '../src/Crops/crops.routes.js'
 
 const BASE_URL = '/smartgrowgt/v1';
 
@@ -19,6 +20,7 @@ const middlewares = (app) => {
 
 // Integración de rutas
 const routes = (app) => {
+    app.use(`${BASE_URL}/cultivos`, cultivosRoutes);
 };
 
 // Iniciar servidor
