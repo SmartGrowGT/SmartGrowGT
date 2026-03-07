@@ -7,6 +7,8 @@ import morgan from 'morgan';
 import { cordOptions } from './cors-configuration.js';
 import { dbConnection } from './db.js';
 
+import usuarioRoutes from '../src/Users/users.router.js';
+
 const BASE_URL = '/smartgrowgt/v1';
 
 // Configuración de middlewares
@@ -17,8 +19,9 @@ const middlewares = (app) => {
     app.use(morgan('dev'));
 }
 
-// Integración de rutas
+// Integración de rutasS
 const routes = (app) => {
+    app.use(`${BASE_URL}/usuarios`, usuarioRoutes);
 };
 
 // Iniciar servidor
