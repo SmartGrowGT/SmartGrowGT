@@ -1,28 +1,29 @@
-import { param } from 'express-validator';
-import { checkValidators } from './check-validators.js';
+import { Router } from 'express';
 
-// Validación para obtener alerta por ID
-export const validateGetAlertById = [
-  param('id')
-    .isMongoId()
-    .withMessage('ID debe ser un ObjectId válido de MongoDB'),
-  checkValidators,
-];
+import {
+ getAlerts,
+ getAlertById,
+ getAlertsByHardware,
+ getAlertsByField,
+ getBadAlerts
+} from './alertlog.controller.js';
 
-// Validación para obtener alertas por hardware
-export const validateGetAlertsByHardware = [
-  param('hardwareId')
-    .trim()
-    .notEmpty()
-    .withMessage('El hardwareId es requerido'),
-  checkValidators,
-];
+import {
+ validateGetAlertById,
+ validateGetAlertsByHardware,
+ validateGetAlertsByField
+} from '../../middlewares/alertlog-validators.js';
 
-// Validación para obtener alertas por campo
-export const validateGetAlertsByField = [
-  param('fieldId')
-    .trim()
-    .notEmpty()
-    .withMessage('El fieldId es requerido'),
-  checkValidators,
-];
+const router = Router();
+
+router.get('/', getAlerts);
+
+router.get('/malas', getBadAlerts);
+
+router.get('/:id', validateGetAlertById, getAlertById);
+
+router.get('/hardware/:hardwareId', validateGetAlertsByHardware, getAlertsByHardware);
+
+router.get('/field/:fieldId', validateGetAlertsByField, getAlertsByField);
+
+export default router;

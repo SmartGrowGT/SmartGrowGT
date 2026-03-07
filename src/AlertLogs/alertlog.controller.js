@@ -1,4 +1,4 @@
-import AlertLog from './alertlog.model.js';
+import AlertLog from "./alertlog.model.js";
 
 // Obtener todas las alertas
 export const getAlerts = async (req,res)=>{
