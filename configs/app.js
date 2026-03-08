@@ -10,7 +10,6 @@ import cultivosRoutes from '../src/Crops/crops.routes.js'
 
 import usuarioRoutes from '../src/Users/users.router.js';
 import fieldRoutes from '../src/Fields/fields.routes.js';
-import cropRoutes from '../src/Crops/crops.routes.js';
 
 const BASE_URL = '/smartgrowgt/v1';
 
