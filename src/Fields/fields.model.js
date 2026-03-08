@@ -26,8 +26,9 @@ const fieldSchema = new Schema({
         required: true
     },
 
-    hardwareId: {
-        type: String,
+    deviceId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Device',
         default: null // Identificador del dispositivo Raspberry (Se asignara despues)
     },
 

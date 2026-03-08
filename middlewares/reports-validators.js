@@ -20,7 +20,7 @@ export const validateGetReportsByField = [
 
 // Validación para obtener reportes por hardware
 export const validateGetReportsByHardware = [
-  param('hardwareId')
+  param('deviceId')
     .trim()
     .notEmpty()
     .withMessage('El hardwareId es requerido'),

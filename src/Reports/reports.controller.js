@@ -4,7 +4,10 @@ import Reports from './reports.model.js';
 export const getReports = async (req, res) => {
   try {
 
-    const reports = await Reports.find().sort({ createdAt: -1 });
+    const reports = await Reports.find()
+      .populate('deviceId', 'name deviceId status')
+      .populate('fieldId', 'name location')
+      .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -14,9 +17,9 @@ export const getReports = async (req, res) => {
   } catch (error) {
 
     res.status(500).json({
-      success:false,
-      message:'Error al obtener los reportes',
-      error:error.message
+      success: false,
+      message: 'Error al obtener los reportes',
+      error: error.message
     });
 
   }
@@ -24,32 +27,34 @@ export const getReports = async (req, res) => {
 
 
 // Obtener reporte por ID
-export const getReportById = async (req,res)=>{
+export const getReportById = async (req, res) => {
 
-  try{
+  try {
 
-    const {id} = req.params;
+    const { id } = req.params;
 
-    const report = await Reports.findById(id);
+    const report = await Reports.findById(id)
+      .populate('deviceId', 'name deviceId status')
+      .populate('fieldId', 'name location');
 
-    if(!report){
+    if (!report) {
       return res.status(404).json({
-        success:false,
-        message:'Reporte no encontrado'
+        success: false,
+        message: 'Reporte no encontrado'
       })
     }
 
     res.status(200).json({
-      success:true,
-      data:report
+      success: true,
+      data: report
     })
 
-  }catch(error){
+  } catch (error) {
 
     res.status(500).json({
-      success:false,
-      message:'Error al obtener el reporte',
-      error:error.message
+      success: false,
+      message: 'Error al obtener el reporte',
+      error: error.message
     })
 
   }
@@ -58,25 +63,27 @@ export const getReportById = async (req,res)=>{
 
 
 // Obtener reportes por campo
-export const getReportsByField = async (req,res)=>{
+export const getReportsByField = async (req, res) => {
 
-  try{
+  try {
 
-    const {fieldId} = req.params;
+    const { fieldId } = req.params;
 
-    const reports = await Reports.find({fieldId});
+    const reports = await Reports.find({ fieldId })
+      .populate('deviceId', 'name deviceId status')
+      .populate('fieldId', 'name location');
 
     res.status(200).json({
-      success:true,
-      data:reports
+      success: true,
+      data: reports
     })
 
-  }catch(error){
+  } catch (error) {
 
     res.status(500).json({
-      success:false,
-      message:'Error al obtener los reportes por campo',
-      error:error.message
+      success: false,
+      message: 'Error al obtener los reportes por campo',
+      error: error.message
     })
 
   }
@@ -85,25 +92,27 @@ export const getReportsByField = async (req,res)=>{
 
 
 // Obtener reportes por hardware
-export const getReportsByHardware = async (req,res)=>{
+export const getReportsByHardware = async (req, res) => {
 
-  try{
+  try {
 
-    const {hardwareId} = req.params;
+    const { deviceId } = req.params; // Cambiado de hardwareId a deviceId
 
-    const reports = await Reports.find({hardwareId});
+    const reports = await Reports.find({ deviceId })
+      .populate('deviceId', 'name deviceId status')
+      .populate('fieldId', 'name location');
 
     res.status(200).json({
-      success:true,
-      data:reports
+      success: true,
+      data: reports
     })
 
-  }catch(error){
+  } catch (error) {
 
     res.status(500).json({
-      success:false,
-      message:'Error al obtener los reportes por hardware',
-      error:error.message
+      success: false,
+      message: 'Error al obtener los reportes por hardware',
+      error: error.message
     })
 
   }
@@ -112,23 +121,25 @@ export const getReportsByHardware = async (req,res)=>{
 
 
 // Obtener reportes malos
-export const getBadReports = async (req,res)=>{
+export const getBadReports = async (req, res) => {
 
-  try{
+  try {
 
-    const reports = await Reports.find({alertType:'bad'});
+    const reports = await Reports.find({ alertType: 'mal' })
+      .populate('deviceId', 'name deviceId status')
+      .populate('fieldId', 'name location');
 
     res.status(200).json({
-      success:true,
-      data:reports
+      success: true,
+      data: reports
     })
 
-  }catch(error){
+  } catch (error) {
 
     res.status(500).json({
-      success:false,
-      message:'Error al obtener los reportes malos',
-      error:error.message
+      success: false,
+      message: 'Error al obtener los reportes malos',
+      error: error.message
     })
 
   }

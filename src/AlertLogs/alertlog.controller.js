@@ -1,23 +1,26 @@
 import AlertLog from "./alertlog.model.js";
 
 // Obtener todas las alertas
-export const getAlerts = async (req,res)=>{
+export const getAlerts = async (req, res) => {
 
-    try{
+    try {
 
-        const alerts = await AlertLog.find().sort({createdAt:-1})
+        const alerts = await AlertLog.find()
+            .populate('deviceId', 'name deviceId status')
+            .populate('fieldId', 'name location')
+            .sort({ createdAt: -1 });
 
         res.status(200).json({
-            success:true,
-            data:alerts
-        })
+            success: true,
+            data: alerts
+        });
 
-    }catch(error){
+    } catch (error) {
 
         res.status(500).json({
-            success:false,
-            message:'Error al obtener las alertas',
-            error:error.message
+            success: false,
+            message: 'Error al obtener las alertas',
+            error: error.message
         })
 
     }
@@ -26,32 +29,34 @@ export const getAlerts = async (req,res)=>{
 
 
 // Obtener alerta por ID
-export const getAlertById = async (req,res)=>{
+export const getAlertById = async (req, res) => {
 
-    try{
+    try {
 
-        const {id} = req.params
+        const { id } = req.params
 
         const alert = await AlertLog.findById(id)
+            .populate('deviceId', 'name deviceId status')
+            .populate('fieldId', 'name location');
 
-        if(!alert){
+        if (!alert) {
             return res.status(404).json({
-                success:false,
-                message:'Alerta no encontrada'
-            })
+                success: false,
+                message: 'Alerta no encontrada'
+            });
         }
 
         res.status(200).json({
-            success:true,
-            data:alert
-        })
+            success: true,
+            data: alert
+        });
 
-    }catch(error){
+    } catch (error) {
 
         res.status(500).json({
-            success:false,
-            message:'Error al obtener la alerta',
-            error:error.message
+            success: false,
+            message: 'Error al obtener la alerta',
+            error: error.message
         })
 
     }
@@ -60,25 +65,27 @@ export const getAlertById = async (req,res)=>{
 
 
 // Obtener alertas por hardware
-export const getAlertsByHardware = async (req,res)=>{
+export const getAlertsByHardware = async (req, res) => {
 
-    try{
+    try {
 
-        const {hardwareId} = req.params
+        const { deviceId } = req.params; // Cambiado de hardwareId a deviceId
 
-        const alerts = await AlertLog.find({hardwareId})
+        const alerts = await AlertLog.find({ deviceId })
+            .populate('deviceId', 'name deviceId status')
+            .populate('fieldId', 'name location');
 
         res.status(200).json({
-            success:true,
-            data:alerts
-        })
+            success: true,
+            data: alerts
+        });
 
-    }catch(error){
+    } catch (error) {
 
         res.status(500).json({
-            success:false,
-            message:'Error al obtener alertas por hardware',
-            error:error.message
+            success: false,
+            message: 'Error al obtener alertas por hardware',
+            error: error.message
         })
 
     }
@@ -87,25 +94,27 @@ export const getAlertsByHardware = async (req,res)=>{
 
 
 // Obtener alertas por campo
-export const getAlertsByField = async (req,res)=>{
+export const getAlertsByField = async (req, res) => {
 
-    try{
+    try {
 
-        const {fieldId} = req.params
+        const { fieldId } = req.params;
 
-        const alerts = await AlertLog.find({fieldId})
+        const alerts = await AlertLog.find({ fieldId })
+            .populate('deviceId', 'name deviceId status')
+            .populate('fieldId', 'name location');
 
         res.status(200).json({
-            success:true,
-            data:alerts
-        })
+            success: true,
+            data: alerts
+        });
 
-    }catch(error){
+    } catch (error) {
 
         res.status(500).json({
-            success:false,
-            message:'Error al obtener alertas por campo',
-            error:error.message
+            success: false,
+            message: 'Error al obtener alertas por campo',
+            error: error.message
         })
 
     }
@@ -115,23 +124,25 @@ export const getAlertsByField = async (req,res)=>{
 
 
 // Obtener alertas malas
-export const getBadAlerts = async (req,res)=>{
+export const getBadAlerts = async (req, res) => {
 
-    try{
+    try {
 
-        const alerts = await AlertLog.find({alertType:'bad'})
+        const alerts = await AlertLog.find({ alertType: 'bad' })
+            .populate('deviceId', 'name deviceId status')
+            .populate('fieldId', 'name location');
 
         res.status(200).json({
-            success:true,
-            data:alerts
-        })
+            success: true,
+            data: alerts
+        });
 
-    }catch(error){
+    } catch (error) {
 
         res.status(500).json({
-            success:false,
-            message:'Error al obtener alertas malas',
-            error:error.message
+            success: false,
+            message: 'Error al obtener alertas malas',
+            error: error.message
         })
 
     }

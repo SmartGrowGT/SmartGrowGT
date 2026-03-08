@@ -5,7 +5,7 @@ import crypto from 'node:crypto';
 
 export const registerDevice = async (req, res) => {
     try {
-        const { name, description } = req.body;
+        const { name, description, userId } = req.body;
 
         // GENERACIÓN DEL ID POR DEFECTO
         // Creamos un ID corto y legible para el agricultor y para programar el Raspberry
@@ -13,6 +13,7 @@ export const registerDevice = async (req, res) => {
         const defaultId = `SG-${crypto.randomBytes(2).toString('hex').toUpperCase()}`;
 
         const newDevice = new Device({
+            userId, // Se asigna el usuario dueño del dispositivo
             deviceId: defaultId, // Aquí se asigna el ID generado automáticamente
             name,
             description,
@@ -22,11 +23,16 @@ export const registerDevice = async (req, res) => {
         await newDevice.save();
 
         res.status(201).json({
+            success: true,
             message: 'Dispositivo registrado con éxito',
             deviceId: defaultId // Se lo devolvemos al usuario para que sepa qué ID ponerle al Raspberry
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error al registrar', error });
+        res.status(500).json({
+            success: false,
+            message: 'Error al registrar',
+            error: error.message
+        });
     }
 };
 

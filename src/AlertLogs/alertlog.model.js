@@ -4,16 +4,16 @@ import mongoose from "mongoose";
 
 const alertLogSchema = new mongoose.Schema({
 
-    hardwareId: {
-        type: String,
-        required: [true, 'El hardwareId es obligatorio'],
-        trim: true
+    deviceId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Device',
+        required: [true, 'El deviceId es obligatorio']
     },
 
     fieldId: {
-        type: String,
-        required: [true, 'El fieldId es obligatorio'],
-        trim: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Field',
+        required: [true, 'El fieldId es obligatorio']
     },
 
     humidity: {
@@ -38,11 +38,11 @@ const alertLogSchema = new mongoose.Schema({
         default: 'bad'
     }
 
-},{
-    timestamps:true
+}, {
+    timestamps: true
 })
 
-alertLogSchema.index({ hardwareId: 1 });
+alertLogSchema.index({ deviceId: 1 });
 alertLogSchema.index({ fieldId: 1 });
 
 export default mongoose.model('AlertLog', alertLogSchema);

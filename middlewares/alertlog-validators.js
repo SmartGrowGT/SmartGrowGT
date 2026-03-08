@@ -9,12 +9,12 @@ export const validateGetAlertById = [
   checkValidators,
 ];
 
-// Validación para obtener alertas por hardware
+// Validación para obtener alertas por dispositivo
 export const validateGetAlertsByHardware = [
-  param('hardwareId')
+  param('deviceId')
     .trim()
     .notEmpty()
-    .withMessage('El hardwareId es requerido'),
+    .withMessage('El deviceId es requerido'),
   checkValidators,
 ];
 

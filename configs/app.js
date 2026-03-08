@@ -13,6 +13,7 @@ import usuarioRoutes from '../src/Users/users.router.js';
 import fieldRoutes from '../src/Fields/fields.routes.js';
 import alertLogRoutes from '../src/AlertLogs/alertlog.routes.js';
 import reportsRoutes from '../src/Reports/reports.routes.js';
+import sensorDataRoutes from '../src/SensorData/sensordata.routes.js';
 
 const BASE_URL = '/smartgrowgt/v1';
 
@@ -32,6 +33,7 @@ const routes = (app) => {
     app.use(`${BASE_URL}/cultivos`, cultivosRoutes);
     app.use(`${BASE_URL}/alerts`, alertLogRoutes);
     app.use(`${BASE_URL}/reports`, reportsRoutes);
+    app.use(`${BASE_URL}/sensordata`, sensorDataRoutes);
 };
 
 // Iniciar servidor

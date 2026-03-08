@@ -1,17 +1,17 @@
 import { Router } from 'express';
 
 import {
- getReports,
- getReportById,
- getReportsByField,
- getReportsByHardware,
- getBadReports
+    getReports,
+    getReportById,
+    getReportsByField,
+    getReportsByHardware,
+    getBadReports
 } from './reports.controller.js';
 
 import {
- validateGetReportById,
- validateGetReportsByField,
- validateGetReportsByHardware
+    validateGetReportById,
+    validateGetReportsByField,
+    validateGetReportsByHardware
 } from '../../middlewares/reports-validators.js';
 
 const router = Router();
@@ -24,6 +24,6 @@ router.get('/:id', validateGetReportById, getReportById);
 
 router.get('/field/:fieldId', validateGetReportsByField, getReportsByField);
 
-router.get('/hardware/:hardwareId', validateGetReportsByHardware, getReportsByHardware);
+router.get('/device/:deviceId', validateGetReportsByHardware, getReportsByHardware);
 
 export default router;

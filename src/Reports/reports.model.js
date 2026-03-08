@@ -3,15 +3,15 @@
 import mongoose from "mongoose";
 
 const reportsSchema = new mongoose.Schema({
-    hardwareId: {
-        type: String,
-        required: [true, 'El hardwareId es obligatorio'],
-        trim: true
+    deviceId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Device',
+        required: [true, 'El deviceId es obligatorio']
     },
     fieldId: {
-        type: String,
-        required: [true, 'El fieldId es obligatorio'],
-        trim: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Field',
+        required: [true, 'El fieldId es obligatorio']
     },
     humidity: {
         type: Number,
@@ -26,11 +26,11 @@ const reportsSchema = new mongoose.Schema({
         enum: ['bien', 'mal'],
         default: 'bien'
     }
-},{
-    timestamps:true
+}, {
+    timestamps: true
 })
 
-reportsSchema.index({ hardwareId: 1 });
+reportsSchema.index({ deviceId: 1 });
 reportsSchema.index({ fieldId: 1 });
 reportsSchema.index({ alertType: 1 });
 
