@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import { cordOptions } from './cors-configuration.js';
 import { dbConnection } from './db.js';
 import alertLogRoutes from './AlertLogs/alertlog.routes.js';
+import reportsRoutes from './Reports/reports.routes.js';
 
 const BASE_URL = '/smartgrowgt/v1';
 
@@ -17,6 +18,7 @@ const middlewares = (app) => {
     app.use(cors(cordOptions));
     app.use(morgan('dev'));
     app.use(`${BASE_URL}/alerts`, alertLogRoutes);
+    app.use(`${BASE_URL}/reports`, reportsRoutes);
 }
 
 // Integración de rutas
