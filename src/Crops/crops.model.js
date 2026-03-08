@@ -4,12 +4,6 @@ import { Schema, model } from 'mongoose';
 
 const CropSchema = new Schema(
     {
-        userId: {
-            type: Schema.Types.ObjectId,
-            ref: "Usuario",
-            required: true,
-        },
-
         name: {
             type: String,
             required: true,

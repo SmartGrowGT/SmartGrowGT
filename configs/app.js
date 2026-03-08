@@ -6,6 +6,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import { cordOptions } from './cors-configuration.js';
 import { dbConnection } from './db.js';
+import cultivosRoutes from '../src/Crops/crops.routes.js'
 
 import usuarioRoutes from '../src/Users/users.router.js';
 import fieldRoutes from '../src/Fields/fields.routes.js';
@@ -25,7 +26,7 @@ const middlewares = (app) => {
 const routes = (app) => {
     app.use(`${BASE_URL}/usuarios`, usuarioRoutes);
     app.use(`${BASE_URL}/fields`, fieldRoutes);
-    app.use(`${BASE_URL}/crops`, cropRoutes);
+    app.use(`${BASE_URL}/cultivos`, cultivosRoutes);
 };
 
 // Iniciar servidor

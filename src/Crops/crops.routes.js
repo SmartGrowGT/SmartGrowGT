@@ -1,50 +1,13 @@
 import { Router } from "express";
-import {
-    getCrops,
-    getCropsByUser,
-    searchCrops,
-    getCropById,
-    createCrop,
-    updateCrop,
-    changeCropStatus
-} from "./crops.controller.js";
-
-import {
-    validateCreateCrop,
-    validateUpdateCrop,
-    validateGetCropById,
-    validateCropStatusChange,
-    validateGetCropsByUser
-} from "../../middlewares/crops-validation.js";
-
-import { uploadCropImage } from "../../middlewares/file-uploader.js";
+import { getCrops, getCropByName } from "./crops.controller.js";
+import { validateGetCropByName } from "../../middlewares/crops-validation.js";
 
 const router = Router();
 
+// GET /cultivos/ → lista todos los cultivos
 router.get("/", getCrops);
 
-router.get("/search", searchCrops);
-
-router.get("/user/:userId", validateGetCropsByUser, getCropsByUser);
-
-router.get("/:id", validateGetCropById, getCropById);
-
-router.post(
-    "/",
-    uploadCropImage.single("image"),
-    validateCreateCrop,
-    createCrop
-);
-
-router.put(
-    "/:id",
-    uploadCropImage.single("image"),
-    validateUpdateCrop,
-    updateCrop
-);
-
-router.put("/:id/activate", validateCropStatusChange, changeCropStatus);
-
-router.put("/:id/deactivate", validateCropStatusChange, changeCropStatus);
+// GET /cultivos/:nombreCultivo → busca cultivos por nombre relacionado
+router.get("/:nombreCultivo", validateGetCropByName, getCropByName);
 
 export default router;
