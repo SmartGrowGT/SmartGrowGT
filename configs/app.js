@@ -14,6 +14,11 @@ import fieldRoutes from '../src/Fields/fields.routes.js';
 import alertLogRoutes from '../src/AlertLogs/alertlog.routes.js';
 import reportsRoutes from '../src/Reports/reports.routes.js';
 import sensorDataRoutes from '../src/SensorData/sensordata.routes.js';
+import productsRoutes from '../src/Products/products.routes.js';
+import fertilizersRoutes from '../src/Fertilizers/fertilizers.routes.js';
+import cartRoutes from '../src/Cart/cart.routes.js';
+import ordersRoutes from '../src/Orders/orders.routes.js';
+import fertilityRoutes from '../src/FertilityRecommendation/fertility.routes.js';
 
 const BASE_URL = '/smartgrowgt/v1';
 
@@ -34,6 +39,11 @@ const routes = (app) => {
     app.use(`${BASE_URL}/alerts`, alertLogRoutes);
     app.use(`${BASE_URL}/reports`, reportsRoutes);
     app.use(`${BASE_URL}/sensordata`, sensorDataRoutes);
+    app.use(`${BASE_URL}/products`, productsRoutes);
+    app.use(`${BASE_URL}/fertilizers`, fertilizersRoutes);
+    app.use(`${BASE_URL}/cart`, cartRoutes);
+    app.use(`${BASE_URL}/orders`, ordersRoutes);
+    app.use(`${BASE_URL}/fertility`, fertilityRoutes);
 };
 
 // Iniciar servidor

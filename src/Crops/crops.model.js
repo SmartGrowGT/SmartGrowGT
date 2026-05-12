@@ -69,6 +69,24 @@ const CropSchema = new Schema(
             type: String
         },
 
+        // --- Perfil de Fertilidad Ideal (kg/Ha) ---
+        idealNitrogen: {
+            min: { type: Number, default: null },
+            max: { type: Number, default: null }
+        },
+        idealPhosphorus: {
+            min: { type: Number, default: null },
+            max: { type: Number, default: null }
+        },
+        idealPotassium: {
+            min: { type: Number, default: null },
+            max: { type: Number, default: null }
+        },
+        idealPH: {
+            min: { type: Number, default: null },
+            max: { type: Number, default: null }
+        },
+
         isActive: {
             type: Boolean,
             default: true,
