@@ -1,9 +1,13 @@
-// Importaciones
 import dotenv from 'dotenv';
-import { initServer } from './configs/app.js';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-// Configurar las vaibles de enetorno
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+dotenv.config({ path: join(__dirname, '.env') });
+
+import { initServer } from './configs/app.js';
 
 // errores no capturados
 process.on('uncaughtException', (error) => {
