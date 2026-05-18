@@ -69,6 +69,30 @@ const fieldSchema = new Schema({
             description: 'Caudal Estable: Flujo de agua constante en el sistema (L/s)'
         }
     },
+    // --- Análisis de Suelo / Datos Nutricionales ---
+    // Estos datos representan el estado actual de los nutrientes en el terreno
+    soilAnalysis: {
+        nitrogen: {
+            type: Number,
+            description: 'Nivel de Nitrógeno (N) actual en el suelo',
+            default: 0
+        },
+        phosphorus: {
+            type: Number,
+            description: 'Nivel de Fósforo (P) actual en el suelo',
+            default: 0
+        },
+        potassium: {
+            type: Number,
+            description: 'Nivel de Potasio (K) actual en el suelo',
+            default: 0
+        },
+        pH: {
+            type: Number,
+            description: 'Nivel de pH actual del suelo',
+            default: 7
+        }
+    },
     healthStatus: {
         type: String,
         enum: ['Saludable', 'En Riesgo', 'Critico'],

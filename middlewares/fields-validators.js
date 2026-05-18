@@ -37,6 +37,12 @@ export const fieldValidator = [
     .optional()
     .isNumeric(),
     
+    // Validaciones para el Análisis de Suelo (Datos Nutricionales)
+    body('soilAnalysis.nitrogen', 'El Nitrógeno debe ser un número').optional().isNumeric(),
+    body('soilAnalysis.phosphorus', 'El Fósforo debe ser un número').optional().isNumeric(),
+    body('soilAnalysis.potassium', 'El Potasio debe ser un número').optional().isNumeric(),
+    body('soilAnalysis.pH', 'El pH debe ser un número').optional().isNumeric(),
+
     checkValidators 
 ];
 
@@ -53,6 +59,13 @@ export const validateUpdateField = [
     body('soilData.dap').optional().isNumeric(),
     body('soilData.ib').optional().isNumeric(),
     body('soilData.qest').optional().isNumeric(),
+    
+    // Validaciones para el Análisis de Suelo (Datos Nutricionales)
+    body('soilAnalysis.nitrogen').optional().isNumeric(),
+    body('soilAnalysis.phosphorus').optional().isNumeric(),
+    body('soilAnalysis.potassium').optional().isNumeric(),
+    body('soilAnalysis.pH').optional().isNumeric(),
+
     body('healthStatus').optional().isIn(['Saludable', 'En Riesgo', 'Critico']),
     checkValidators
 ];
