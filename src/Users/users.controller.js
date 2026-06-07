@@ -29,32 +29,16 @@ export const getUsers = async (req, res) => {
 
 export const getUserById = async (req, res) => {
     try {
-
         const { id } = req.params;
-
-        const usuario = await Usuario.findOne({
-            _id: id,
-            isActive: true
-        });
+        const usuario = await Usuario.findById(id); // Busca por ID sin importar el estado
 
         if (!usuario) {
-            return res.status(404).json({
-                success: false,
-                message: 'Usuario no encontrado'
-            });
+            return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
         }
 
-        res.status(200).json({
-            success: true,
-            usuario
-        });
-
+        res.status(200).json({ success: true, usuario });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al obtener el usuario',
-            error
-        });
+        res.status(500).json({ success: false, message: 'Error interno', error });
     }
 };
 
@@ -90,18 +74,18 @@ export const updateUser = async (req, res) => {
         const { id } = req.params;
         const updates = req.body;
 
-        // No permitir cambiar _id ni isActive directamente
-        delete updates._id;
-        delete updates.isActive;
+        // YA NO BORRAMOS isActive AQUÍ para permitir que el frontend lo cambie
+        delete updates._id; 
 
-        const user = await Usuario.findOneAndUpdate(
-            { _id: id, isActive: true },
+        // Usamos findByIdAndUpdate que busca por ID sin importar el estado
+        const user = await Usuario.findByIdAndUpdate(
+            id,
             updates,
             { new: true, runValidators: true }
         );
 
         if (!user) {
-            return res.status(404).json({ success: false, message: 'Usuario no encontrado o desactivado' });
+            return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
         }
 
         res.status(200).json({ success: true, message: 'Usuario actualizado', user });
@@ -116,19 +100,36 @@ export const deactivateUser = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const user = await Usuario.findOneAndUpdate(
-            { _id: id, isActive: true },
+        // Quitamos el filtro isActive: true
+        const user = await Usuario.findByIdAndUpdate(
+            id,
             { isActive: false },
             { new: true }
         );
 
-        if (!user) {
-            return res.status(404).json({ success: false, message: 'Usuario no encontrado o ya desactivado' });
-        }
+        if (!user) return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
 
         res.status(200).json({ success: true, message: 'Usuario desactivado', user });
-
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Error al desactivar usuario', error });
+        res.status(500).json({ success: false, message: 'Error', error });
+    }
+};
+
+// NUEVA FUNCIÓN: Reactivar usuario
+export const activateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const user = await Usuario.findByIdAndUpdate(
+            id,
+            { isActive: true },
+            { new: true }
+        );
+
+        if (!user) return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+
+        res.status(200).json({ success: true, message: 'Usuario reactivado', user });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error', error });
     }
 };
