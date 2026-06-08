@@ -16,8 +16,7 @@ const fieldSchema = new Schema({
     },
     // --- RELACIONES ---
     user: {
-        type: Schema.Types.ObjectId,
-        ref: 'Usuario',
+        type: String,
         required: true
     },
     crop: {

@@ -110,7 +110,7 @@ export const calculateRecommendation = async (req, res) => {
                 ? Math.ceil(maxKg / fert.presentationWeight)
                 : 0;
 
-            return {
+            const recObj = {
                 fertilizer: {
                     _id: fert._id,
                     name: fert.name,
@@ -122,6 +122,8 @@ export const calculateRecommendation = async (req, res) => {
                 bagsNeeded,
                 bagWeight: fert.presentationWeight
             };
+            console.log("Calculated Rec:", JSON.stringify(recObj));
+            return recObj;
         });
 
         // Advertencias de pH
@@ -142,6 +144,12 @@ export const calculateRecommendation = async (req, res) => {
             { nutrient: 'Nitrógeno (N)', deficit: deficitN, priority: 3 }
         ].filter(n => n.deficit > 0);
 
+        // Filtrar fertilizantes que no aportan nada útil (totalKg = 0)
+        // y ordenar de menor cantidad de sacos a mayor (los más eficientes primero)
+        const usefulRecommendations = recommendations
+            .filter(rec => rec.totalKg > 0)
+            .sort((a, b) => a.bagsNeeded - b.bagsNeeded);
+
         res.status(200).json({
             success: true,
             data: {
@@ -153,7 +161,7 @@ export const calculateRecommendation = async (req, res) => {
                     phosphorus: deficitP,
                     potassium: deficitK
                 },
-                recommendations,
+                recommendations: usefulRecommendations,
                 applicationOrder,
                 warnings
             }

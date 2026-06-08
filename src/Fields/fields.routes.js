@@ -15,7 +15,7 @@ routes.get('/:id', getFieldById);
 routes.get('/user/:userId', getFieldsByUser);
 
 // Crear parcela (con validaciones)
-routes.post('/', [fieldValidator], createField);
+routes.post('/', createField);
 
 // Actualizar parcela
 routes.put('/:id', [validateUpdateField], updateField);

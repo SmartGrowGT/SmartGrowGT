@@ -10,7 +10,7 @@ export const fieldValidator = [
     .isNumeric()
     .isFloat({ min: 0 }),
     body('user', 'ID de usuario no válido')
-    .isMongoId(),
+    .isNumeric(),
     body('crop', 'ID de cultivo no válido')
     .isMongoId(),
     
