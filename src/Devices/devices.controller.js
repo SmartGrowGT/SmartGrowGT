@@ -5,16 +5,16 @@ import crypto from 'node:crypto';
 
 export const registerDevice = async (req, res) => {
     try {
-        const { name, description, userId } = req.body;
+        const { name, description, userId, deviceId } = req.body;
 
-        // GENERACIÓN DEL ID POR DEFECTO
-        // Creamos un ID corto y legible para el agricultor y para programar el Raspberry
-        // Ejemplo de resultado: SG-7A2F
-        const defaultId = `SG-${crypto.randomBytes(2).toString('hex').toUpperCase()}`;
+        // GENERACIÓN DEL ID POR DEFECTO O USO DEL HARDWARE ID
+        // Utilizamos el deviceId proveído (por ejemplo, escaneado de la placa Raspberry Pi Pico W)
+        // o generamos un ID corto y legible por defecto si no viene ninguno.
+        const finalDeviceId = deviceId || `SG-${crypto.randomBytes(2).toString('hex').toUpperCase()}`;
 
         const newDevice = new Device({
             userId, // Se asigna el usuario dueño del dispositivo
-            deviceId: defaultId, // Aquí se asigna el ID generado automáticamente
+            deviceId: finalDeviceId, // Asigna el ID real físico o el generado automáticamente
             name,
             description,
             status: 'offline'
@@ -25,7 +25,7 @@ export const registerDevice = async (req, res) => {
         res.status(201).json({
             success: true,
             message: 'Dispositivo registrado con éxito',
-            deviceId: defaultId // Se lo devolvemos al usuario para que sepa qué ID ponerle al Raspberry
+            deviceId: finalDeviceId // Se lo devolvemos al usuario
         });
     } catch (error) {
         res.status(500).json({

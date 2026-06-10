@@ -4,8 +4,7 @@ import mongoose from "mongoose";
 
 const deviceSchema = new mongoose.Schema({
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Usuario',
+        type: String,
         required: true
     },
     deviceId: {
