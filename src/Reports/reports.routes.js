@@ -5,7 +5,8 @@ import {
     getReportById,
     getReportsByField,
     getReportsByHardware,
-    getBadReports
+    getBadReports,
+    getReportsByUser
 } from './reports.controller.js';
 
 import {
@@ -19,6 +20,8 @@ const router = Router();
 router.get('/', getReports);
 
 router.get('/malas', getBadReports);
+
+router.get('/user/:userId', getReportsByUser);
 
 router.get('/:id', validateGetReportById, getReportById);
 

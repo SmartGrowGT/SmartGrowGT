@@ -1,4 +1,5 @@
 import Reports from './reports.model.js';
+import Device from '../Devices/devices.model.js';
 
 // Obtener todos los reportes
 export const getReports = async (req, res) => {
@@ -22,6 +23,34 @@ export const getReports = async (req, res) => {
       error: error.message
     });
 
+  }
+};
+
+// Obtener reportes por usuario
+export const getReportsByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    // Encontrar dispositivos del usuario
+    const devices = await Device.find({ userId });
+    const deviceIds = devices.map(d => d._id);
+
+    const reports = await Reports.find({ deviceId: { $in: deviceIds } })
+      .populate('deviceId', 'name deviceId status')
+      .populate('fieldId', 'name location')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      data: reports
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error al obtener los reportes del usuario',
+      error: error.message
+    });
   }
 };
 
