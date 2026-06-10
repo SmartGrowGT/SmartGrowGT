@@ -1,4 +1,5 @@
 import AlertLog from "./alertlog.model.js";
+import Device from '../Devices/devices.model.js';
 
 // Obtener todas las alertas
 export const getAlerts = async (req, res) => {
@@ -147,4 +148,31 @@ export const getBadAlerts = async (req, res) => {
 
     }
 
+}
+
+// Obtener alertas por usuario
+export const getAlertsByUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const devices = await Device.find({ userId });
+        const deviceIds = devices.map(d => d._id);
+
+        const alerts = await AlertLog.find({ deviceId: { $in: deviceIds } })
+            .populate('deviceId', 'name deviceId status')
+            .populate('fieldId', 'name location')
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({
+            success: true,
+            data: alerts
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error al obtener las alertas del usuario',
+            error: error.message
+        });
+    }
 }

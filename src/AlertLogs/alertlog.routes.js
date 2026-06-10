@@ -5,7 +5,8 @@ import {
     getAlertById,
     getAlertsByHardware,
     getAlertsByField,
-    getBadAlerts
+    getBadAlerts,
+    getAlertsByUser
 } from './alertlog.controller.js';
 
 import {
@@ -19,6 +20,8 @@ const router = Router();
 router.get('/', getAlerts);
 
 router.get('/malas', getBadAlerts);
+
+router.get('/user/:userId', getAlertsByUser);
 
 router.get('/:id', validateGetAlertById, getAlertById);
 
