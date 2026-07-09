@@ -1,3 +1,9 @@
+/**
+ * @module fields.controller
+ * @description Manejador de las peticiones de parcelas.
+ * FIX: Se corrigió la función getFieldsByUser para hacer populate() del 'name' correcto
+ * del cultivo en lugar de 'nombreCultivo', lo que evita que retorne parcelas sin datos de cultivo en frontend.
+ */
 import Field from './fields.model.js';
 
 export const createField = async (req, res) => {
@@ -60,11 +66,13 @@ export const getFieldsByUser = async (req, res) => {
 
         // Filtramos por el ID del usuario y traemos la info del cultivo
         const fields = await Field.find({ user: userId })
-            .populate('crop', 'nombreCultivo humedad_min humedad_max');
+            .populate('crop', 'name minimumHumidity maximumHumidity');
 
         if (fields.length === 0) {
-            return res.status(404).send({
-                success: false,
+            return res.send({
+                success: true,
+                total: 0,
+                fields: [],
                 message: 'No se encontraron parcelas para este usuario'
             });
         }
