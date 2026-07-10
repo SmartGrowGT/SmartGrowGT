@@ -327,6 +327,10 @@ Asistente: Actúa como un Ingeniero Agrónomo experto en programación de fertir
 
         const jsonResult = JSON.parse(response.text);
 
+        // Novedad: Guardar el plan de fertilización automáticamente en la parcela
+        field.fertilizationPlan = jsonResult;
+        await field.save();
+
         res.status(200).json({
             success: true,
             data: jsonResult
