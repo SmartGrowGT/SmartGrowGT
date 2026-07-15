@@ -39,6 +39,10 @@ const usuarioSchema = Schema({
         type: String,
         required: [true, 'El municipio es requerido']
     },
+    village: {
+        type: String,
+        default: ''
+    },
     farmerType: {
         type: String,
         enum: ['Pequeño productor', 'Mediano productor', 'Cooperativa', 'Empresa agrícola'],
