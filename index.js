@@ -1,24 +1,19 @@
 import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { initServer, app } from './configs/app.js';
 
-dotenv.config({ path: join(__dirname, '.env') });
-
-import { initServer } from './configs/app.js';
-
-// errores no capturados
+// Prevenir caídas drásticas del proceso en producción
 process.on('uncaughtException', (error) => {
-    console.log(error);
-    process.exit(1);
+    console.error('Uncaught Exception:', error);
 });
-// errores no manejados en promesas
+
 process.on('unhandledRejection', (reason, promise) => {
-    console.log(reason, promise);
-    process.exit(1);
+    console.error('Unhandled Rejection:', reason);
 });
-// Iniciar el servidor
+
+// Iniciar base de datos / servidor local
 console.log('Iniciando servidor de SmartGrowGT....');
 initServer();
+
+export default app;
