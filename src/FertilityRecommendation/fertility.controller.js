@@ -2,6 +2,8 @@
 
 import Crop from '../Crops/crops.model.js';
 import Fertilizer from '../Fertilizers/fertilizers.model.js';
+import Field from '../Fields/fields.model.js';
+import { GoogleGenAI, Type } from '@google/genai';
 
 const UNIT_CONVERSIONS = {
     'm2': (val) => val / 10000,
@@ -174,3 +176,179 @@ export const calculateRecommendation = async (req, res) => {
         });
     }
 };
+
+export const calculateAIRecommendation = async (req, res) => {
+    try {
+        const { fieldId, fertilizerIds } = req.body;
+
+        if (!fieldId || !fertilizerIds) {
+            return res.status(400).json({
+                success: false,
+                message: 'Faltan datos requeridos: fieldId, fertilizerIds'
+            });
+        }
+
+        const field = await Field.findById(fieldId);
+        if (!field) {
+            return res.status(404).json({ success: false, message: 'Parcela (Field) no encontrada' });
+        }
+
+        const crop = await Crop.findById(field.crop);
+        if (!crop) {
+            return res.status(404).json({ success: false, message: 'Cultivo asociado a la parcela no encontrado' });
+        }
+
+        const fertilizers = await Fertilizer.find({
+            _id: { $in: fertilizerIds },
+            isActive: true
+        });
+
+        if (fertilizers.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No se encontraron fertilizantes disponibles'
+            });
+        }
+
+        // Calcular déficit de nutrientes (kg/Ha)
+        let deficitN = 0, deficitP = 0, deficitK = 0;
+        if (crop.idealNitrogen && crop.idealPhosphorus && crop.idealPotassium) {
+            const idealN = (crop.idealNitrogen.min + crop.idealNitrogen.max) / 2;
+            const idealP = (crop.idealPhosphorus.min + crop.idealPhosphorus.max) / 2;
+            const idealK = (crop.idealPotassium.min + crop.idealPotassium.max) / 2;
+
+            deficitN = Math.max(0, idealN - (field.soilAnalysis?.nitrogen || 0));
+            deficitP = Math.max(0, idealP - (field.soilAnalysis?.phosphorus || 0));
+            deficitK = Math.max(0, idealK - (field.soilAnalysis?.potassium || 0));
+        }
+
+        const deficits = {
+            nitrógeno: deficitN,
+            fósforo: deficitP,
+            potasio: deficitK
+        };
+
+        const promptText = `
+Asistente: Actúa como un Ingeniero Agrónomo experto en programación de fertirriego de alta precisión. Tu tarea es analizar los datos de entrada de un cultivo, el análisis de su suelo, las características físicas de riego y el catálogo de fertilizantes disponibles para generar un plan de recomendación innovador, eficiente y distribuido en el tiempo.
+
+### REGLAS DE NEGOCIO AGRONÓMICO:
+1. SELECCIÓN INTELIGENTE: No uses todos los fertilizantes provistos. Selecciona la combinación MÁS EFICIENTE (menor cantidad de sacos o mezclas menos complejas) que cubra los déficits de N, P y K.
+2. DISTRIBUCIÓN TEMPORAL (CRONOGRAMA): Los cultivos absorben nutrientes en diferentes etapas. Debes dividir el total de fertilizantes a aplicar según los "growthDays" del cultivo en 3 fases:
+   - Fase Inicial / Vegetativa (0% al 30% del ciclo): Alta demanda de Fósforo (P) para desarrollo de raíces y Nitrógeno (N) moderado.
+   - Fase de Desarrollo / Floración (30% al 60% del ciclo): Equilibrio de N-P-K.
+   - Fase de Producción / Llenado de Fruto (60% al 100% del ciclo): Alta demanda de Potasio (K) para el dulzor/tamaño y Nitrógeno (N) controlado. El Fósforo baja al mínimo.
+3. ADVERTENCIAS DE PH: Si el pH está fuera de rango, indica qué fertilizantes de la lista son de reacción ácida o alcalina para ayudar a regularlo, o advierte la pérdida de eficiencia.
+4. CÁLCULO DE RIEGO (INNOVACIÓN): Utiliza los datos de \`soilData\` (cc, pmp, zr, ur, dap, ib, qest) para calcular la lámina de riego óptima y estimar el tiempo de riego recomendado en minutos para el sistema.
+
+### DATOS DE ENTRADA EN TIEMPO DE EJECUCIÓN:
+- Crop (Cultivo objetivo e ideales): ${JSON.stringify(crop)}
+- Field (Datos de la parcela del usuario, área, soilData y soilAnalysis): ${JSON.stringify(field)}
+- Fertilizers (Catálogo disponible): ${JSON.stringify(fertilizers)}
+- Deficits_Calculados_Ha: ${JSON.stringify(deficits)}
+`;
+
+        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        
+        const responseSchema = {
+            type: Type.OBJECT,
+            properties: {
+                resumen_diagnostico: {
+                    type: Type.OBJECT,
+                    properties: {
+                        evaluacion_suelo: { type: Type.STRING },
+                        alerta_ph: { type: Type.STRING, nullable: true }
+                    },
+                    required: ["evaluacion_suelo", "alerta_ph"]
+                },
+                seleccion_fertilizantes: {
+                    type: Type.ARRAY,
+                    items: {
+                        type: Type.OBJECT,
+                        properties: {
+                            id: { type: Type.STRING },
+                            nombre: { type: Type.STRING },
+                            razon_seleccion: { type: Type.STRING }
+                        },
+                        required: ["id", "nombre", "razon_seleccion"]
+                    }
+                },
+                cronograma_aplicacion: {
+                    type: Type.OBJECT,
+                    properties: {
+                        total_ciclo_dias: { type: Type.NUMBER },
+                        fases: {
+                            type: Type.ARRAY,
+                            items: {
+                                type: Type.OBJECT,
+                                properties: {
+                                    nombre_fase: { type: Type.STRING },
+                                    rango_dias: { type: Type.STRING },
+                                    fertilizantes_a_aplicar: {
+                                        type: Type.ARRAY,
+                                        items: {
+                                            type: Type.OBJECT,
+                                            properties: {
+                                                nombre: { type: Type.STRING },
+                                                cantidad_kg_total_fase: { type: Type.NUMBER },
+                                                cantidad_sacos_fase: { type: Type.NUMBER }
+                                            },
+                                            required: ["nombre", "cantidad_kg_total_fase", "cantidad_sacos_fase"]
+                                        }
+                                    },
+                                    instrucciones_agronomicas: { type: Type.STRING }
+                                },
+                                required: ["nombre_fase", "rango_dias", "fertilizantes_a_aplicar", "instrucciones_agronomicas"]
+                            }
+                        }
+                    },
+                    required: ["total_ciclo_dias", "fases"]
+                },
+                configuracion_riego_sugerido: {
+                    type: Type.OBJECT,
+                    properties: {
+                        lamina_disponible_mm: { type: Type.NUMBER },
+                        frecuencia_estimada: { type: Type.STRING },
+                        tiempo_riego_minutos_por_sesion: { type: Type.NUMBER }
+                    },
+                    required: ["lamina_disponible_mm", "frecuencia_estimada", "tiempo_riego_minutos_por_sesion"]
+                }
+            },
+            required: ["resumen_diagnostico", "seleccion_fertilizantes", "cronograma_aplicacion", "configuracion_riego_sugerido"]
+        };
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: promptText,
+            config: {
+                responseMimeType: 'application/json',
+                responseSchema: responseSchema,
+            }
+        });
+
+        const jsonResult = JSON.parse(response.text);
+
+        // Novedad: Guardar el plan de fertilización automáticamente en la parcela
+        field.fertilizationPlan = jsonResult;
+        await field.save();
+
+        res.status(200).json({
+            success: true,
+            data: jsonResult
+        });
+    } catch (error) {
+        let statusCode = 500;
+        let userMessage = 'Error al generar recomendación con IA';
+
+        if (error.status === 503) {
+            statusCode = 503;
+            userMessage = 'Los servidores de Inteligencia Artificial (Google Gemini) están experimentando alta demanda. Por favor, intenta nuevamente en un momento.';
+        }
+
+        res.status(statusCode).json({
+            success: false,
+            message: userMessage,
+            error: error.message
+        });
+    }
+};
+

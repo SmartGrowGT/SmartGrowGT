@@ -96,6 +96,15 @@ const fieldSchema = new Schema({
         type: String,
         enum: ['Saludable', 'En Riesgo', 'Critico'],
         default: 'Saludable'
+    },
+    // --- Seguimiento Temporal ---
+    plantingDate: {
+        type: Date,
+        default: Date.now // Fecha de siembra, por defecto al crear o cuando se configure
+    },
+    fertilizationPlan: {
+        type: Object,
+        default: null // Aquí se guardará el resultado estructurado de la IA
     }
 }, {
     timestamps: true

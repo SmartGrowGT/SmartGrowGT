@@ -19,6 +19,7 @@ import fertilizersRoutes from '../src/Fertilizers/fertilizers.routes.js';
 import cartRoutes from '../src/Cart/cart.routes.js';
 import ordersRoutes from '../src/Orders/orders.routes.js';
 import fertilityRoutes from '../src/FertilityRecommendation/fertility.routes.js';
+import aiAssistantRoutes from '../src/AIAssistant/aiAssistant.routes.js';
 
 const BASE_URL = '/smartgrowgt/v1';
 
@@ -44,6 +45,7 @@ const routes = (app) => {
     app.use(`${BASE_URL}/cart`, cartRoutes);
     app.use(`${BASE_URL}/orders`, ordersRoutes);
     app.use(`${BASE_URL}/fertility`, fertilityRoutes);
+    app.use(`${BASE_URL}/ai-assistant`, aiAssistantRoutes);
 };
 
 // Iniciar servidor
