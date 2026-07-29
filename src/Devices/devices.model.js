@@ -24,7 +24,7 @@ const deviceSchema = new mongoose.Schema({
         type: String,
         required: true,
         enum: ['online', 'offline'],
-        default: 'offline'
+        default: 'online'
     },
     createdAt: {
         type: Date,
