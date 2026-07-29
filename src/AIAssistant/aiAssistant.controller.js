@@ -93,7 +93,7 @@ Si el usuario pregunta algo no relacionado con agricultura, botánica o tecnolog
 Mantén tus respuestas relativamente cortas y fáciles de leer en un chat.`;
 
         const chatSessionAI = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-1.5-flash',
             contents: [
                 { role: 'user', parts: [{ text: systemPrompt }] },
                 { role: 'model', parts: [{ text: 'Entendido. Estoy listo para ayudar como Ingeniero Agrónomo experto.' }] },
