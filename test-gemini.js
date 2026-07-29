@@ -7,7 +7,7 @@ async function test() {
     try {
         console.log("Key:", process.env.GEMINI_API_KEY ? "EXISTS" : "MISSING");
         const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-        
+
         const responseSchema = {
             type: Type.OBJECT,
             properties: {
@@ -76,16 +76,16 @@ async function test() {
         };
 
         const response = await ai.models.generateContent({
-            model: 'gemini-1.5-pro',
+            model: 'gemini-3.6-flash',
             contents: "Hola, dame un JSON ficticio que cumpla con este formato.",
             config: {
                 responseMimeType: 'application/json',
                 responseSchema: responseSchema,
             }
         });
-        
+
         console.log("Success!");
-    } catch(err) {
+    } catch (err) {
         console.error("API ERROR:", err);
     }
 }

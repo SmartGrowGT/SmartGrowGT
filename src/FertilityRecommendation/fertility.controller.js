@@ -317,7 +317,7 @@ Asistente: Actúa como un Ingeniero Agrónomo experto en programación de fertir
         };
 
         const response = await ai.models.generateContent({
-            model: 'gemini-1.5-flash',
+            model: 'gemini-3.6-flash',
             contents: promptText,
             config: {
                 responseMimeType: 'application/json',
