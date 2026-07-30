@@ -17,7 +17,7 @@ export const registerDevice = async (req, res) => {
             deviceId: finalDeviceId, // Asigna el ID real físico o el generado automáticamente
             name,
             description,
-            status: 'offline'
+            status: 'online'
         });
 
         await newDevice.save();
